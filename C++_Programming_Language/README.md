@@ -31,10 +31,3 @@ Declared objects and declared references that are not non-static data members ar
       URL: https://en.cppreference.com/w/
       
      
-## Cloning the repo
-
-```bash
-$ git clone https://github.com/azure-rtos/threadx.git
-```
-
-
