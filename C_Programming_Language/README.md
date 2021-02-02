@@ -10,43 +10,43 @@ C programming is a general-purpose, procedural, imperative computer programming 
 
 ### Facts about C
 
-    #### C was invented to write an operating system called UNIX
+         C was invented to write an operating system called UNIX
   
-    #### C is a successor of B language which was introduced around the early 1970s
+         C is a successor of B language which was introduced around the early 1970s
   
-    #### The language was formalized in 1988 by the American National Standard Institute (ANSI)
+         The language was formalized in 1988 by the American National Standard Institute (ANSI)
   
-    #### The UNIX OS was totally written in C
+         The UNIX OS was totally written in C
   
-    #### Today C is the most widely used and popular System Programming Language
+         Today C is the most widely used and popular System Programming Language
   
-    #### Most of the state-of-the-art software have been implemented using C
+         Most of the state-of-the-art software have been implemented using C
    
 ### Applications of C Programming
 
-    #### Operating Systems
+         Operating Systems
     
-    #### Language Compilers
+         Language Compilers
     
-    #### Assemblers
+         Assemblers
     
-    #### Text Editors
+         Text Editors
     
-    #### Print Spoolers
+         Print Spoolers
     
-    #### Network Drivers
+         Network Drivers
     
-    #### Modern Programs
+         Modern Programs
     
-    #### Databases
+         Databases
     
-    #### Language Interpreters
+         Language Interpreters
     
-    #### Utilities
+         Utilities
 
 ## Documentation
 
-    #### C language： https://en.cppreference.com/w/c/language
+         C language： https://en.cppreference.com/w/c/language
     
     
     
