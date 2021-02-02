@@ -57,4 +57,4 @@
 
 ## Cloning the repo
 
-       $ git clone https://github.com/GeekDevelope/Language-and-frameworks.git
+       $ git clone https://github.com/Geek-Developer-Inc/Language-and-Frameworks.git
