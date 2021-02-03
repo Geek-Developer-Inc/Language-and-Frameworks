@@ -1,4 +1,4 @@
-![C++ programming language](Docs/isocpp_logo.jpg)
+![C++ programming language logo](Docs/isocpp_logo.png)
 
 
 # C++ programming language
