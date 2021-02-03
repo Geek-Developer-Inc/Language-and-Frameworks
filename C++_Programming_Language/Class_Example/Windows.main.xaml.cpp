@@ -1,32 +1,23 @@
 #include "Windows.xaml.h"
-#include "color.h"
+
 
 using namespace SDKSample;
 using namespace SDKSample::WASAPIAudio;
 
-#define green redbud::io::state::manual << redbud::io::hfg::green
-#define red   redbud::io::state::manual << redbud::io::hfg::red
-#define white redbud::io::state::manual << redbud::io::hfg::white
-
-/*    Ó¦ÓÃ SDKTemplate Àà   */
+/*    åº”ç”¨ SDKTemplate ç±»   */
 int main(int argc, char** argv)
 {
+        SDKTemplate SDK1;      /*    ç±»åž‹  å˜é‡å   å¦‚ï¼šint a;   æ­¤å¤„è‡ªåŠ¨è°ƒç”¨é»˜è®¤æ— å‚æž„é€ å‡½æ•°    */
+        SDK1.ShowParameters(); /*    ç±»è°ƒç”¨æˆå‘˜å‡½æ•°   */
+        SDK1.SetParameters(386, (char*)"new value", 653.563f);
+        int retBoolean = 0;
+        float retComPtr = 0.00f;
+        SDK1.GetParameters(&retBoolean, NULL, &retComPtr);
+        std::cout << "retBoolean = " << retBoolean << std::endl;
+        std::cout << "retComPtr = " << retComPtr << std::endl;
 
-	SDKTemplate SDK1;      /*    ÀàÐÍ  ±äÁ¿Ãû   Èç£ºint a;   ´Ë´¦×Ô¶¯µ÷ÓÃÄ¬ÈÏÎÞ²Î¹¹Ôìº¯Êý    */
-	SDK1.ShowParameters(); /*    Ààµ÷ÓÃ³ÉÔ±º¯Êý   */
-	SDK1.SetParameters(386, (char*)"new value", 653.563f);
-	int retBoolean = 0;
-	float retComPtr = 0.00f;
-	SDK1.GetParameters(&retBoolean, NULL, &retComPtr);
-	std::cout << red << "retBoolean = " << retBoolean << std::endl;
-	std::cout << "retComPtr = " << retComPtr << std::endl;
+        SDKTemplate SDK2(525,(char*)"525",5.25f);   /*   è‡ªåŠ¨è°ƒç”¨å¸¦å‚æž„é€     */
+        SDK2.ShowParameters();
 
-	SDKTemplate SDK2(525,(char*)"525",5.25f);   /*   ×Ô¶¯µ÷ÓÃ´ø²Î¹¹Ôì    */
-	SDK2.ShowParameters();
-	std::cout << white << std::endl;
-	return 0;    /*   ×Ô¶¯Îö¹¹Ôìº¯Êý   */
+        return 0;    /*   è‡ªåŠ¨æžæž„é€ å‡½æ•°   */
 }
-
-//namespace SDKSample
-
-
