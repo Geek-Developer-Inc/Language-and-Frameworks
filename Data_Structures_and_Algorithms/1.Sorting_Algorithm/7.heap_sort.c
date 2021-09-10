@@ -96,24 +96,21 @@ static int heap_sort(int *buffer, unsigned int size)
 
 int main(void)
 {
-	printf("=========== [bubble_sort] ===========\n");
-	int arr[30] = { 0 };
-	for (int i = 0; i < 30; i++)
-	{
-		arr[i] = rand() % 100;
-	}
+	int arr[] = { -10,10,-9,9,8,-8,-7,7,6,6,-5,-5,-4,4,-3,-2,1,-1,0,5,2,3 };
+
 	int len = sizeof(arr) / sizeof(arr[0]);
+	printf("=========== [heap_sort] ===========\n");
 	printf("Before sorting:\n");
 	for (int i = 0; i < len; i++)
 	{
 		printf("%d  ", arr[i]);
 	}
-	printf("\n");
 	heap_sort(arr, len);
-	printf("After sorting:\n");
+	printf("\nAfter sorting:\n");
 	for (int i = 0; i < len; i++)
 	{
 		printf("%d  ", arr[i]);
 	}
-	printf("\n"); return 0;
+	printf("\n");
+	return 0;
 }
