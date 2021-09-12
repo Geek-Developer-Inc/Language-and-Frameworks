@@ -1,8 +1,8 @@
 1.bubble_sort.c   冒泡排序(Bubble Sort)
-2.selection_sort.c
+2.selection_sort.c  选择排序(Selection Sort)
 3.insertion_sort.c
 4.shell_sort.c
-5.merge_sort.c
+5.merge_sort.c  归并排序(Merge Sort)
 6.quick_sort.c
 7.heap_sort.c
 8.counting_sort.c
