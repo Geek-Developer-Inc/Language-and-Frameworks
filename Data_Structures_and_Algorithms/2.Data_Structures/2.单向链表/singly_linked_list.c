@@ -40,7 +40,7 @@ struct link_list *link_list_init(void)
 		else
 		{
 			memset(head_ptr->head, 0, sizeof(struct link_list_node));
-			head_ptr->head->data = 0;                                                                                   /*  头节点不保存任何数据，即头节点数据域为空  */
+			head_ptr->head->data = NULL;                                                                                   /*  头节点不保存任何数据，即头节点数据域为空  */
 			head_ptr->head->next = NULL;                                                                                /*  头节点的指针域暂时指向NULL  */
 		}
 	}
@@ -49,7 +49,7 @@ struct link_list *link_list_init(void)
 
 
 /*
- *  函数原型：int link_list_insert(struct link_list *list_ptr, unsigned int list_pos, int value)
+ *  函数原型：int link_list_insert(struct link_list *list_ptr, unsigned int list_pos, void *value)
  *  函数功能：链表插入节点操作的函数定义
  *  函数参数：*list_ptr 指向链表头节点的指针； list_pos 要插入的位置,控制头插法还是尾插法； value 数据域的值
  *  返 回 值：正常返 0； 异常，函数传入参数有误返回 -1，如动态内存分配失败返回 -2
@@ -61,9 +61,9 @@ struct link_list *link_list_init(void)
  *            (3) 将节点插入并对接前面的节点
  */
 
-int link_list_insert(struct link_list *list_ptr, unsigned int list_pos, int value)
+int link_list_insert(struct link_list *list_ptr, unsigned int list_pos, void *value)
 {
-	if (NULL == list_ptr)
+	if ((NULL == list_ptr) || (NULL == value))
 	{
 		return -1;
 	}
@@ -139,31 +139,34 @@ int link_list_pos_remove(struct link_list *list_ptr, unsigned int list_pos)
 
 
 /*
- *  函数原型：int link_list_search(struct link_list *list_ptr, int list_value, int *ret_val)
+ *  函数原型：int link_list_search(struct link_list *list_ptr, struct link_list_node *list_value, comparre_type_def call_back, int *ret_val)
  *  函数功能：链表查找节点操作的函数定义
- *  函数参数：*list_ptr 指向链表头节点的指针； list_value 要查找节点的数据域的值； ret_val 返回查找到的结果
+ *  函数参数：*list_ptr 指向链表头节点的指针； *list_value 要查找节点的数据域的值； *ret_val 返回查找到的结果，-1 表示查找失败
  *  返 回 值：正常返 0； 异常，函数传入参数有误返回 -1； 要查找节点的节点不存在返回 -2
  *  版    本：V1.2.0
  *  时    间：2021-9-11
- *  备    注：无
+ *  备    注：call_back 回调函数需自己实现
  */
 
-int link_list_search(struct link_list *list_ptr, int list_value, int *ret_val)
+int link_list_search(struct link_list *list_ptr, void *list_value, int(*call_back)(void*, void*), int *ret_val)
 {
-	if ((NULL == list_ptr) || (NULL == ret_val))
+	if ((NULL == list_ptr) || (NULL == list_value) || (NULL == ret_val))
 	{
 		return -1;
 	}
 	else
 	{
+		unsigned int count = 0;
+		*ret_val = -1;
 		struct link_list_node *current_ptr = (list_ptr->head)->next;                                                    /*  头节点不保存实际数据  */
 		while (NULL != current_ptr)                                                                                     /*  遍历查找  */
 		{
-			if (current_ptr->data == list_value)
+			if (0 == call_back(current_ptr->data, list_value))
 			{
-				*ret_val = current_ptr->data;
+				*ret_val = count;
 				return 0;
 			}
+			count++;
 			current_ptr = current_ptr->next;                                                                            /*  节点向后移动，逐个判断  */
 		}
 		ret_val = NULL;
@@ -173,18 +176,18 @@ int link_list_search(struct link_list *list_ptr, int list_value, int *ret_val)
 
 
 /*
- *  函数原型：int link_list_modify(struct link_list *list_ptr, unsigned int list_pos, int value)
+ *  函数原型：int link_list_modify(struct link_list *list_ptr, unsigned int list_pos, void *value)
  *  函数功能：链表修改操作的函数定义
- *  函数参数：*list_ptr 指向链表头节点的指针； list_pos 要修改节点的数据域的值； value 新值
+ *  函数参数：*list_ptr 指向链表头节点的指针； list_pos 要修改节点的数据域的值； *value 新数据域的值
  *  返 回 值：正常返 0； 异常，函数传入参数有误返回 -1
  *  版    本：V1.2.0
  *  时    间：2021-9-11
  *  备    注：无
  */
 
-int link_list_modify(struct link_list *list_ptr, unsigned int list_pos, int value)
+int link_list_modify(struct link_list *list_ptr, unsigned int list_pos, void *value)
 {
-	if ((NULL == list_ptr) || (list_pos >= list_ptr->size))
+	if ((NULL == list_ptr) || (list_pos >= list_ptr->size) || (NULL == value))
 	{
 		return -1;
 	}
@@ -252,6 +255,7 @@ int link_list_destroy(struct link_list *list_ptr)
 			free(current_ptr);
 			current_ptr = temp_ptr;
 		}
+		list_ptr->size = 0;
 		free(list_ptr);
 		current_ptr = NULL;
 		temp_ptr = NULL;
@@ -261,8 +265,17 @@ int link_list_destroy(struct link_list *list_ptr)
 }
 
 
-/*  打印链表的内容  */
-int link_list_print(struct link_list *list_ptr)
+/*
+ *  函数原型：int link_list_print(struct link_list *list_ptr, print_type_def call_back)
+ *  函数功能：打印链表的内容的函数定义
+ *  函数参数：*list_ptr 指向链表头节点的指针； call_back 打印回调函数
+ *  返 回 值：正常返 0； 异常，函数传入参数有误返回 -1
+ *  版    本：V1.2.0
+ *  时    间：2021-9-11
+ *  备    注：打印回调函数需自定义
+ */
+
+int link_list_print(struct link_list *list_ptr, void(*call_back)(void*))
 {
 	if (NULL == list_ptr)
 	{
@@ -273,10 +286,20 @@ int link_list_print(struct link_list *list_ptr)
 		struct link_list_node *current_ptr = (list_ptr->head)->next;
 		while (NULL != current_ptr)
 		{
-			printf("%d\t", current_ptr->data);
+			call_back(current_ptr->data);
 			current_ptr = current_ptr->next;
 		}
-		printf("\n");
 	}
 	return 0;
+}
+
+
+/*  返回链表第一个节点  */
+void *link_list_get_first(struct link_list *list_ptr)
+{
+	if (NULL == list_ptr)
+	{
+		return NULL;
+	}
+	return (list_ptr->head->next->data);
 }
