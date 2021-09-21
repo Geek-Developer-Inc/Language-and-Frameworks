@@ -204,22 +204,20 @@ int singly_linked_list_for_earch(struct singly_linked_list* list_haed, void* lis
 	}
 	else
 	{
-		int count = 0;
+		*ret_value = -1;
 		/*  头节点不保存实际数据  */
 		struct singly_linked_list_node* current_ptr = (list_haed->head)->next;
 		/*  遍历查找  */
-		while (NULL != current_ptr)
+		for(int i = 0; (i<list_haed->size)&&(NULL != current_ptr);i++)
 		{
 			if (0 == compare_call_back(current_ptr->data, list_value))
 			{
-				*ret_value = count;
+				*ret_value = i;
 				return 0;
 			}
-			count++;
 			/*  节点向后移动，逐个判断  */
 			current_ptr = current_ptr->next;
 		}
-		ret_value = NULL;
 	}
 	return -2;
 }

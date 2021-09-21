@@ -12,211 +12,270 @@
 
 
 /*  
- *  函数原型：struct link_list_major *link_list_major_init(void)
- *  函数功能：链表初始化操作的函数定义
- *  函数参数：无
- *  返 回 值：正常返链表头节点指针； 如动态内存分配失败返回 NULL
+ *  函数原型：int singly_linked_list_major_create(struct singly_linked_list_major** list_haed)
+ *  函数功能：创建链表
+ *  函数参数：** list_haed 返回链表的头节点指针
+ *  返 回 值：创建成功返回 0； 传入参数错误返回 -1； 分配动态内存失败返回 -2
  *  版    本：V1.2.0
  *  时    间：2021-9-11
  *  备    注：不创建头节点，只创建链表节点
  */
 
-struct link_list_major *link_list_major_init(void)
+int singly_linked_list_major_create(struct singly_linked_list_major** list_haed)
 {
-	struct link_list_major *head_ptr = (struct link_list_major *)malloc(sizeof(struct link_list_major));
-	if (NULL == head_ptr)
+	if (NULL == list_haed)
 	{
-		return NULL;
+		return -1;
 	}
-	else
+	else 
 	{
-		memset(head_ptr, 0, sizeof(struct link_list_major));
-		head_ptr->size = 0;
-		head_ptr->head.next = NULL;
+		*list_haed = (struct singly_linked_list_major *)malloc(sizeof(struct singly_linked_list_major));
+		if (NULL == (*list_haed))
+		{
+			return -2;
+		}
+		else
+		{
+			memset((*list_haed), 0, sizeof(struct singly_linked_list_major));
+			(*list_haed)->size = 0;
+			(*list_haed)->head.next = NULL;
+		}
 	}
-	return head_ptr;
+	return 0;
 }
 
 
 /*
- *  函数原型：struct link_list_major *link_list_major_init(void)
- *  函数功能：链表插入节点操作的函数定义
- *  函数参数：*list_ptr 链表首地址； list_pos 头插法、尾插法控制； *value 插入节点的数据域
- *  返 回 值：正常返回 0； 传入参数错误返回 -1
+ *  函数原型：int singly_linked_list_major_insert(struct singly_linked_list_major* list_haed, int list_pos, struct singly_linked_list_major_node* list_value)
+ *  函数功能：向链表插入节点
+ *  函数参数：*list_haed 链表首地址； list_pos 头插法、尾插法控制； *list_value 插入节点的数据域
+ *  返 回 值：节点插入成功返回 0； 传入参数错误返回 -1
  *  版    本：V1.2.0
  *  时    间：2021-9-11
  *  备    注：不创建实际节点，节点在外部定义
  */
 
-int link_list_major_insert(struct link_list_major *list_ptr, unsigned int list_pos, struct link_list_major_node *value)
+int singly_linked_list_major_insert(struct singly_linked_list_major* list_haed, int list_pos, struct singly_linked_list_major_node* list_value)
 {
-	if ((NULL == list_ptr) || (NULL == value))
+	if ((NULL == list_haed) || (NULL == list_value))
 	{
 		return -1;
 	}
 	else
 	{
-		if (list_pos > list_ptr->size)
+		if ((list_pos < 0) || (list_pos > list_haed->size))
 		{
 			/*  强制尾插法  */
-			list_pos = list_ptr->size;
+			list_pos = list_haed->size;
 		}
 		/*  寻找要插入节点的位置  */
-		struct link_list_major_node *current_ptr = &(list_ptr->head);
-		for (unsigned int i = 0; (i < list_pos) && (NULL != current_ptr); i++)
+		struct singly_linked_list_major_node* current_ptr = &(list_haed->head);
+		for (int i = 0; (i < list_pos) && (NULL != current_ptr); i++)
 		{
 			current_ptr = current_ptr->next;
 		}
 		/*  插入节点  */
-		value->next = current_ptr->next;
-		current_ptr->next = value;
-
-		list_ptr->size++;
+		list_value->next = current_ptr->next;
+		current_ptr->next = list_value;
+		list_haed->size++;
 	}
 	return 0;
 }
 
 
 /*
- *  函数原型：int link_list_major_pos_remove(struct link_list_major *list_ptr, unsigned int list_pos)
+ *  函数原型：int singly_linked_list_major_by_pos_remove(struct singly_linked_list_major* list_haed, int list_pos)
  *  函数功能：根据位置删除链表节点的函数定义
- *  函数参数：list_ptr 链表首地址； list_pos 要删除节点的位置
- *  返 回 值：正常返回 0； 传入参数错误返回 -1
+ *  函数参数：*list_haed 链表首地址； list_pos 要删除节点的位置
+ *  返 回 值：删除成功返回 0； 传入参数错误返回 -1
  *  版    本：V1.2.0
  *  时    间：2021-9-11
  *  备    注：无需释放节点空间
  */
 
-int link_list_major_pos_remove(struct link_list_major *list_ptr, unsigned int list_pos)
+int singly_linked_list_major_by_pos_remove(struct singly_linked_list_major* list_haed, int list_pos)
 {
-	if ((NULL == list_ptr) || (list_pos >= list_ptr->size))
+	if ((NULL == list_haed) || (list_pos < 0) || (list_pos >= list_haed->size))
 	{
 		return -1;
 	}
 	else
 	{
-		struct link_list_major_node *current_ptr = &(list_ptr->head);
-		for (unsigned int i = 0; ((i < list_pos) && (NULL != current_ptr)); i++)
+		struct singly_linked_list_major_node* current_ptr = &(list_haed->head);
+		for (int i = 0; ((i < list_pos) && (NULL != current_ptr)); i++)
 		{
 			current_ptr = current_ptr->next;
 		}
 		current_ptr->next = current_ptr->next->next;
 
-		list_ptr->size--;
+		list_haed->size--;
 	}
 	return 0;
 }
 
 
 /*
- *  函数原型：int link_list_major_pos_remove(struct link_list_major *list_ptr, unsigned int list_pos)
- *  函数功能：链表查找节点操作的函数定义
- *  函数参数：list_ptr 链表首地址； *list_value 要查找节点的数据域； compare 查找回调函数； *ret_val 返回查找到节点的位置，-1 查找失败
- *  返 回 值：正常返回 0； 传入参数错误返回 -1； 查找失败返回 -2
+ *  函数原型：int intsingly_linked_list_major_by_value_remove(struct singly_linked_list_major* list_haed, struct singly_linked_list_major_node* list_value, int(*compare_call_back)(struct singly_linked_list_major_node*, struct singly_linked_list_major_node*))
+ *  函数功能：根据值删除链表节点的函数定义
+ *  函数参数：*list_haed 链表首地址； *list_value 要删除节点的值； compare_call_back 比较回调函数
+ *  返 回 值：删除成功返回 0； 传入参数错误返回 -1； 查找失败返回 -2
  *  版    本：V1.2.0
  *  时    间：2021-9-11
- *  备    注：需自定义查找回调函数
+ *  备    注：需自定义查找回调函数  int compare_call_back(singly_linked_list_major_node* value1, singly_linked_list_major_node* value2)  返回 0
  */
 
-int link_list_major_search(struct link_list_major *list_ptr, struct link_list_major_node *list_value, comparre_type_def compare, int *ret_val)
+int intsingly_linked_list_major_by_value_remove(struct singly_linked_list_major* list_haed, struct singly_linked_list_major_node* list_value, int(*compare_call_back)(struct singly_linked_list_major_node*, struct singly_linked_list_major_node*))
 {
-	if ((NULL == list_ptr) || (NULL == list_value) || (ret_val == NULL))
+	if ((NULL == list_haed) || (NULL == list_value) || (NULL == compare_call_back))
 	{
 		return -1;
 	}
 	else
 	{
-		*ret_val = -1;
-		int flage = 0;
-		struct link_list_major_node *current_ptr = list_ptr->head.next;
-		while (NULL != current_ptr)
+		struct singly_linked_list_major_node* current_ptr = list_haed->head.next;
+		for (int i = 0; (i < list_haed->size) && (NULL != current_ptr); i++)
 		{
-			if (0 == compare(current_ptr, list_value))
+			if (0 == compare_call_back(current_ptr, list_value))
 			{
-				*ret_val = flage;
+				singly_linked_list_major_by_pos_remove(list_haed, i);
 				return 0;
 			}
 			current_ptr = current_ptr->next;
-			flage++;
 		}
+	}
+	return -2;
+}
 
+/*
+ *  函数原型：int singly_linked_list_major_for_earch(struct singly_linked_list_major* list_haed, struct singly_linked_list_major_node* list_value, int(*compare_call_back)(struct singly_linked_list_major_node*, struct singly_linked_list_major_node*), int* ret_value)
+ *  函数功能：链表查找节点操作的函数定义
+ *  函数参数：*list_haed 链表首地址； *list_value 要查找节点的数据域； compare_call_back 查找回调函数； *ret_value 返回查找到节点的位置，-1 查找失败
+ *  返 回 值：正常返回 0； 传入参数错误返回 -1； 查找失败返回 -2
+ *  版    本：V1.2.0
+ *  时    间：2021-9-11
+ *  备    注：需自定义查找回调函数  int compare_call_back(singly_linked_list_major_node* value1, singly_linked_list_major_node* value2)
+ */
+
+int singly_linked_list_major_for_earch(struct singly_linked_list_major* list_haed, struct singly_linked_list_major_node* list_value, int(*compare_call_back)(struct singly_linked_list_major_node*, struct singly_linked_list_major_node*), int* ret_value)
+{
+	if ((NULL == list_haed) || (NULL == list_value) || (NULL == compare_call_back) || (NULL == ret_value))
+	{
+		return -1;
+	}
+	else
+	{
+		*ret_value = -1;
+		struct singly_linked_list_major_node* current_ptr = list_haed->head.next;
+		for (int i = 0; (i < list_haed->size) && (NULL != current_ptr); i++)
+		{
+			if (0 == compare_call_back(current_ptr, list_value))
+			{
+				*ret_value = i;
+				return 0;
+			}
+			current_ptr = current_ptr->next;
+		}
 	}
 	return -2;
 }
 
 
 /*
- *  函数原型：int link_list_major_get_size(struct link_list_major *list_ptr, unsigned int *ret_len)
+ *  函数原型：int singly_linked_list_major_get_size(struct singly_linked_list_major* list_haed, int* ret_size)
  *  函数功能：获取链表节点个数的函数定义
- *  函数参数：list_ptr 链表首地址； *ret_len 返回查找到节点个数
+ *  函数参数：*list_haed 链表首地址； *ret_size 返回查找到节点个数
  *  返 回 值：正常返回 0； 传入参数错误返回 -1
  *  版    本：V1.2.0
  *  时    间：2021-9-11
  *  备    注：无
  */
 
-int link_list_major_get_size(struct link_list_major *list_ptr, unsigned int *ret_len)
+int singly_linked_list_major_get_size(struct singly_linked_list_major* list_haed, int* ret_size)
 {
-	if ((NULL == list_ptr) || (NULL == ret_len))
+	if ((NULL == list_haed) || (NULL == ret_size))
 	{
 		return -1;
 	}
 	else
 	{
-		*ret_len = list_ptr->size;
+		*ret_size = list_haed->size;
 	}
 	return 0;
 }
 
 
 /*
- *  函数原型：int link_list_major_destroy(struct link_list_major *list_ptr)
+ *  函数原型：int singly_linked_list_major_get_front(struct singly_linked_list_major* list_haed, struct singly_linked_list_major_node** ret_value)
+ *  函数功能：获取链表首个有值节点的数据
+ *  函数参数：*list_haed 链表首地址； *ret_value 返回查找到节点的值
+ *  返 回 值：正常返回 0； 传入参数错误返回 -1
+ *  版    本：V1.2.0
+ *  时    间：2021-9-11
+ *  备    注：无
+ */
+
+int singly_linked_list_major_get_front(struct singly_linked_list_major* list_haed, struct singly_linked_list_major_node** ret_value)
+{
+	if ((NULL == list_haed) || (NULL == ret_value))
+	{
+		return -1;
+	}
+	else
+	{
+		*ret_value = list_haed->head.next;
+	}
+	return 0;
+}
+
+
+/*
+ *  函数原型：int singly_linked_list_major_destroy(struct singly_linked_list_major* list_haed)
  *  函数功能：销毁链表的函数定义
- *  函数参数：list_ptr 链表首地址
- *  返 回 值：正常返回 0； 传入参数错误返回 -1
+ *  函数参数：*list_haed 链表首地址
+ *  返 回 值：销毁成功返回 0； 传入参数错误返回 -1
  *  版    本：V1.2.0
  *  时    间：2021-9-11
  *  备    注：无
  */
 
-int link_list_major_destroy(struct link_list_major *list_ptr)
+int singly_linked_list_major_destroy(struct singly_linked_list_major* list_haed)
 {
-	if (NULL == list_ptr)
+	if (NULL == list_haed)
 	{
 		return -1;
 	}
 	else
 	{
-		free(list_ptr);
-		list_ptr = NULL;
+		free(list_haed);
+		list_haed = NULL;
 	}
 	return 0;
 }
 
 
 /*
- *  函数原型：int link_list_major_print(struct link_list_major *list_ptr, pri_type_def call_back)
+ *  函数原型：int singly_linked_list_major_print_value(struct singly_linked_list_major* list_haed, void(*print_call_back)(struct singly_linked_list_major_node*))
  *  函数功能：打印链表内容的函数定义
- *  函数参数：list_ptr 链表首地址； call_back 回调函数
+ *  函数参数：*list_haed 链表首地址； print_call_back 回调函数
  *  返 回 值：正常返回 0； 传入参数错误返回 -1
  *  版    本：V1.2.0
  *  时    间：2021-9-11
- *  备    注：需要自定义回调函数 call_back
+ *  备    注：需要自定义回调函数 print_call_back    void print_call_back(struct singly_linked_list_major_node* value)
  */
 
-int link_list_major_print(struct link_list_major *list_ptr, pri_type_def call_back)
+int singly_linked_list_major_print_value(struct singly_linked_list_major* list_haed, void(*print_call_back)(struct singly_linked_list_major_node*))
 {
-	if (NULL == list_ptr)
+	if ((NULL == list_haed) || (NULL == print_call_back))
 	{
 		return -1;
 	}
 	else
 	{
-		struct link_list_major_node *current_ptr = list_ptr->head.next;
+		struct singly_linked_list_major_node* current_ptr = list_haed->head.next;
 
 		while (NULL != current_ptr)
 		{
-			call_back(current_ptr);
+			print_call_back(current_ptr);
 			current_ptr = current_ptr->next;
 		}
 	}
